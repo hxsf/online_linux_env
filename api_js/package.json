@@ -1,0 +1,27 @@
+{
+  "name": "web_ide_api",
+  "version": "0.0.0-auto",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "cross-env DEBUG=api:* env=development nodemon app.js"
+  },
+  "dependencies": {
+    "cross-env": "^4.0.0",
+    "debug": "~2.6.0",
+    "dockerode": "^2.4.3",
+    "dotenv": "^4.0.0",
+    "ioredis": "^2.5.0",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^2.0.1",
+    "koa-router": "^7.1.1",
+    "uuid": "^3.0.1"
+  },
+  "description": "api of webIDE",
+  "main": "app.js",
+  "repository": "https://github.com/hxsf/web_IDE_API.git",
+  "author": "hxsf <hxsf@vip.qq.com>",
+  "license": "MIT"
+}
