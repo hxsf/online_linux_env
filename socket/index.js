@@ -1,7 +1,9 @@
 const pty = require('pty.js')
 const io = require('socket.io')(10000)
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs')
+const path = require('path')
+const rimraf = require('rimraf')
+const mkdirp = require('mkdirp')
 
 io.of('/pty').on('connection', function (socket) {
     var term = pty.spawn('bash', [], {
@@ -38,12 +40,14 @@ io.of('/fs').on('connection', function (socket) {
                         name,
                         basedir,
                         fullpath,
+                        type: 'file',
                     });
                 } else if (stats.isDirectory()) {
                     folders.push({
                         name,
                         basedir,
                         fullpath,
+                        type: 'folder',
                     });
                 }
             }
@@ -55,5 +59,21 @@ io.of('/fs').on('connection', function (socket) {
     })
     socket.on('writeFile', (fullpath, str, cb) => {
         fs.writeFile(fullpath, str, 'utf8', cb)
+    })
+    socket.on('remove', (fullpath, cb) => {
+        rimraf(fullpath, cb)
+    })
+    socket.on('createDir', (fullpath, cb) => {
+        mkdirp(fullpath, cb)
+    })
+    socket.on('createFile', (fullpath, cb) => {
+        const dirname = path.dirname(fullpath)
+        if (!fs.existsSync(dirname)) mkdirp.sync(dirname)
+        fs.writeFile(fullpath, '', cb)
+    })
+    socket.on('move', (oldpath, newpath, cb) => {
+        const dirname = path.dirname(newpath)
+        if (!fs.existsSync(dirname)) mkdirp.sync(dirname)
+        fs.rename(oldpath, newpath, cb)
     })
 })

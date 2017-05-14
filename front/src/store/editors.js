@@ -17,7 +17,6 @@ export default {
         removeEditor(state, fullpath) {
             const index = state.editors.findIndex(item => item.fullpath === fullpath);
             if (index > -1) {
-                console.log(state.editors[index].fullpath);
                 state.editors.splice(index, 1);
             }
         },

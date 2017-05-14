@@ -3,23 +3,19 @@
 	- [ ] 其他类似username-port-id.domain，代理到 NAT server
 	- [ ] 支持WebSocket
 - [ ] NAT
-    - [ ] 从 redis 读取代理关系。
+    - [x] 从 redis 读取代理关系。
 	- [ ] 订阅 redis 队列，修改变动的映射关系
     - [ ] 根据代理映射关系，分别代理到某一个 Container
-    - [ ] 支持 TCP/UDP
 - [ ] Server
     - [ ] Auth
-    - [ ] containers' CRUD
-    - [ ] make pipe in container
+    - [x] containers' CRUD
 - [ ] Socket Server in containers
-    - [ ] pty
-    - [ ] modif files
+    - [x] pty
+    - [x] modif files
     - [ ] upload and download files
 - [ ] Front
-    - [ ] text editor
-    - [ ] termial
+    - [x] text editor
+    - [x] termial
 - [ ] Docker image
     - [ ] export some ports
-    - [ ] make a shellscript to make pipe between ports
     - [ ] package Socket server
-    - [ ] mount volume out

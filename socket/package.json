@@ -7,7 +7,9 @@
   "author": "hxsf",
   "license": "MIT",
   "dependencies": {
+    "mkdirp": "^0.5.1",
     "pty.js": "^0.3.1",
+    "rimraf": "^2.6.1",
     "socket.io": "^1.7.3"
   }
 }
