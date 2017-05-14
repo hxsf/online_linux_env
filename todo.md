@@ -8,6 +8,7 @@
     - [ ] 根据代理映射关系，分别代理到某一个 Container
 - [ ] Server
     - [ ] Auth
+    - [ ] data permission
     - [x] containers' CRUD
 - [ ] Socket Server in containers
     - [x] pty
