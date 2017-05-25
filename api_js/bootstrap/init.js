@@ -7,7 +7,10 @@ const dotenv = require('dotenv');
 const config = dotenv.config().parsed;
 const redis = require('./redis');
 const docker = require('./docker');
+const pg = require('./pg');
+
 app.context.redis = redis
+app.context.pg = pg
 app.context.docker = docker
 
 app.use(bodyparser);

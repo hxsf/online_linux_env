@@ -17,6 +17,7 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^2.0.1",
     "koa-router": "^7.1.1",
+    "pg": "^6.2.2",
     "uuid": "^3.0.1"
   },
   "description": "api of webIDE",

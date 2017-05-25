@@ -109,13 +109,6 @@
     };
 </script>
 <style>
-    /* fix body size */
-    html, body {
-        /*background-color: #333;*/
-    }
-    #app {
-        height: 100vh;
-    }
     /* fix tab heigth */
     .ivu-tabs.ivu-tabs-card.fix-height {
         height: 100%;
@@ -134,7 +127,7 @@
     .layout{
         display: block;
         width: 100%;
-        height: 100%;
+        height: 100vh;
         /*border: 1px solid #d7dde4;*/
         /*background: #f5f7f9;*/
         position: relative;

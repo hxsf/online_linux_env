@@ -7,6 +7,10 @@ export default {
         token: localStorage.getItem(TOKEN_NAME) || '',
     },
     mutations: {
+        logout(state) {
+            state.token = '';
+            localStorage.setItem(TOKEN_NAME, '');
+        },
         token(state, token) {
             if (token) {
                 state.token = token;

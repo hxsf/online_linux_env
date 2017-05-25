@@ -1,7 +1,8 @@
 <template>
     <div class="page">
+        <div class="img"></div>
         <div id="auth">
-            <Form :label-width="200">
+            <Form class="form" :label-width="50">
                 <Form-item label="姓名" prop="name">
                     <Input v-model="name" placeholder="请输入姓名"></Input>
                 </Form-item>
@@ -32,15 +33,18 @@
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: `username=${this.name}&password=${this.pass}`,
-                    // body: {
-                    //     username: this.name,
-                    //     password: this.pass,
-                    // },
                 })
-                .then(resp => resp.json())
-                .then((data) => {
-                    this.$store.commit('token', data.token);
-                    this.$router.push('/');
+                .then((resp) => {
+                    resp.json().then((data) => {
+                        if (resp.ok) {
+                            this.$store.commit('token', data.token);
+                            this.$router.push('/');
+                        } else {
+                            this.$Notice.error({
+                                title: data.msg,
+                            });
+                        }
+                    });
                 })
                 .catch((err) => {
                     console.error(err);
@@ -63,11 +67,26 @@
     justify-content: center;
     align-content: center;
     align-items: center;
+    background-color: #232323;
+}
+.img {
+    display: flex;
+    flex: 4;
+    height: 100%;
+    background-image: url('../assets/bg.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #232323;
+    background-position: center 45%;
+    margin-left: 50px;
 }
 #auth {
     display: flex;
-    flex-grow: 0;
-    width: 500px;
-    height: 300px;
+    flex-grow: 1;
+    /*flex-basis: 300px;*/
+    margin-right: 50px;
+}
+#auth .form {
+    margin: auto;
 }
 </style>

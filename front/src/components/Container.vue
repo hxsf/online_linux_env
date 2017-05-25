@@ -19,42 +19,88 @@
                 <span class="value"><Tag :color="color">{{ data.status }}</Tag></span>
             </li>
             <li class="info-item">
-                <span class="title">State</span>
-                <span class="value"><Tag :color="color">{{ data.state }}</Tag></span>
-            </li>
-            <li class="info-item">
                 <span class="title">ID</span>
-                <span class="value">{{ data.id.slice(0, 12) + '...' }}</span>
+                <span class="value">{{ data.id.slice(0, 20) + '...' }}</span>
             </li>
             <li class="info-item">
                 <span class="title">Created</span>
-                <span class="value">{{ data.created }}</span>
+                <span class="value">
+                    {{ created }}
+                    <Button type="ghost" size="small" shape="circle" icon="loop" @click="friendlyTime.created = !friendlyTime.created"></Button>
+                </span>
+            </li>
+            <li class="info-item">
+                <span class="title">StartedAt</span>
+                <span class="value">
+                    {{ startedAt }}
+                    <Button type="ghost" size="small" shape="circle" icon="loop" @click="friendlyTime.startedAt = !friendlyTime.startedAt"></Button>
+                </span>
+            </li>
+            <li class="info-item">
+                <span class="title">FinishedAt</span>
+                <span class="value">
+                    {{ finishedAt }}
+                    <Button type="ghost" size="small" shape="circle" icon="loop" @click="friendlyTime.finishedAt = !friendlyTime.finishedAt"></Button>
+                </span>
             </li>
             <li class="info-item">
                 <span class="title">Image</span>
                 <span class="value">{{ data.image }}</span>
             </li>
+            <li class="info-item">
+                <span class="title">Remark</span>
+                <span class="value">{{ data.remark || '空' }}</span>
+            </li>
         </ul>
     </Card>
 </template>
 <script>
+    import * as moment from 'moment';
+
     const colorTable = {
         running: 'green',
         exited: 'red',
         created: 'blue',
     };
-
+    
     export default {
         props: ['data'],
+        data() {
+            return {
+                friendlyTime: {
+                    created: true,
+                    startedAt: true,
+                    finishedAt: true,
+                },
+            };
+        },
         computed: {
+            created() {
+                if (this.friendlyTime.created) {
+                    return moment(this.data.created).toNow(true);
+                }
+                return moment(this.data.created).format('YYYY-MM-DD HH:mm:ss');
+            },
+            startedAt() {
+                if (this.friendlyTime.startedAt) {
+                    return moment(this.data.state.StartedAt).toNow(true);
+                }
+                return moment(this.data.state.StartedAt).format('YYYY-MM-DD HH:mm:ss');
+            },
+            finishedAt() {
+                if (this.friendlyTime.finishedAt) {
+                    return moment(this.data.state.FinishedAt).toNow(true);
+                }
+                return moment(this.data.state.FinishedAt).format('YYYY-MM-DD HH:mm:ss');
+            },
             color() {
-                return colorTable[this.data.state] || 'yellow';
+                return colorTable[this.data.status] || 'yellow';
             },
             isStop() {
-                return this.data.state === 'exited' || this.data.state === 'created';
+                return !this.data.state.Running;
             },
             isRuning() {
-                return this.data.state === 'running';
+                return this.data.state.Running;
             },
         },
         methods: {
@@ -73,7 +119,7 @@
                 .then(resp => resp.json())
                 .then((data) => {
                     this.data.status = data.Status;
-                    this.data.state = data.Status;
+                    this.data.state = data;
                 })
                 .catch((err) => {
                     this.$Notice.error({
@@ -96,7 +142,7 @@
                 .then(resp => resp.json())
                 .then((data) => {
                     this.data.status = data.Status;
-                    this.data.state = data.Status;
+                    this.data.state = data;
                 })
                 .catch((err) => {
                     this.$Notice.error({

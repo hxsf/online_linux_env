@@ -3,7 +3,7 @@
         <div class="layout-ceiling">
             <div class="layout-ceiling-main">
                 <!-- <a href="#">注册登录</a> | -->
-                <a href="#">帮助中心</a><!--  |
+                <a href="#" @click.stop.prevent="logout">退出登陆</a><!--  |
                 <a href="#">安全中心</a> |
                 <a href="#">服务大厅</a> -->
             </div>
@@ -14,9 +14,11 @@
         <div class="container-list">
             <Container :data="container" v-for="container in containers" :key="containers.id" @remove="removeContainer"></Container>
             <Card class="container add">
-                <Select v-model="imageForNew" style="width:200px">
+                <Select v-model="imageForNew" placeholder="请选择模版..." required>
                     <Option v-for="item in imageList" :value="item" :key="item">{{ item }}</Option>
                 </Select>
+                <Input v-model="ContainerNameForNew" placeholder="请输入名称..." required></Input>
+                <Input v-model="ContainerRemarkForNew" placeholder="请输入备注..."></Input>
                 <br>
                 <span @click.prevent.stop="newContainer"><Icon type="plus-round"></Icon> 添加</span>
             </Card>
@@ -38,9 +40,15 @@
                 containers: [],
                 imageList: [],
                 imageForNew: '',
+                ContainerNameForNew: '',
+                ContainerRemarkForNew: '',
             };
         },
         methods: {
+            logout() {
+                this.$store.commit('logout');
+                this.$router.push('/auth');
+            },
             update() {
                 fetch('/v1/container/', {
                     headers: {
@@ -88,15 +96,24 @@
                     });
                     return;
                 }
+                if (!this.ContainerNameForNew || !/^[A-Za-z_0-9]+$/.test(this.ContainerNameForNew)) {
+                    this.$Notice.error({
+                        title: '名字只接收字母数字下划线',
+                    });
+                    return;
+                }
                 fetch('/v1/container/', {
                     method: 'POST',
                     headers: {
                         token: this.$store.state.common.token,
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `image=${this.imageForNew}`,
+                    body: `name=${this.ContainerNameForNew}&image=${this.imageForNew}&remark=${this.ContainerRemarkForNew}`,
                 })
                 .then((resp) => {
+                    this.ContainerNameForNew = '';
+                    this.imageForNew = '';
+                    this.ContainerRemarkForNew = '';
                     if (resp.status === 401) {
                         this.$router.push('/auth');
                     }
@@ -135,7 +152,7 @@
         background: #f5f7f9;
         position: relative;
         border-radius: 4px;
-        overflow: hidden;
+        /*overflow: hidden;*/
     }
     .layout-header{
         height: 60px;
@@ -175,7 +192,7 @@
     .container.add {
         display: flex;
         justify-content: center;
-        font-size: 4em;
+        font-size: 2.5em;
         cursor: pointer;
         text-align: center;
     }

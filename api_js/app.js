@@ -14,6 +14,7 @@ app.use(async (ctx, next) => {
         await next()
     } catch (e) {
         ctx.status = e.status || 500
+        console.log(e)
         ctx.body = {msg: e.message}
     }
 })
