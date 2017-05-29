@@ -72,5 +72,7 @@ var image = require('./image')
 router.use('/image', check_token, image.routes(), image.allowedMethods())
 var system = require('./system')
 router.use('/system', check_token, system.routes(), system.allowedMethods())
+var proxy = require('./proxy')
+router.use('/proxy', check_token, proxy.routes(), proxy.allowedMethods())
 
 module.exports = router

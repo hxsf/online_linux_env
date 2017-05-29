@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+  online_linux_env:
+    image: openresty/openresty
+    ports:
+      - 8000:80
+    volumes:
+      - .:/code:Z
+    working_dir: /code
+    networks:
+      - gateway
+    command: [-p, /code/]
+  redis:
+    image: redis
+    ports:
+     - 6379:6379
+    networks:
+     - gateway
+
+networks:
+  gateway:
+    external:
+      name: online_linux_env_gateway

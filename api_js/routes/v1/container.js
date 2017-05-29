@@ -17,7 +17,7 @@ router.get('/', async (ctx, next) => {
             continue
         }
         try {
-            var {Id: id, Created: created, Config: {Image: image}, State: State} = await ctx.docker.getContainer(container.id).inspect()
+            var {Id: id, Created: created, Config: {Image: image}, State: State, Name: real_name} = await ctx.docker.getContainer(container.id).inspect()
         } catch (err) {
             deleted_list.push(container.id)
             continue
@@ -25,7 +25,7 @@ router.get('/', async (ctx, next) => {
         let {Status: status} = State
         let state = State
         let {name, remark} = container
-        list.push({id, image, created, remark, name, status, state})
+        list.push({id, image, created, remark, name, status, state, real_name})
     }
     if (deleted_list.length) {
         await ctx.pg.query('delete from containers where id in ($1)', [deleted_list])
@@ -38,12 +38,12 @@ router.get('/', async (ctx, next) => {
 router.get('/:id', async (ctx, next) => {
     try {
         const constainer = await ctx.docker.getContainer(ctx.params.id)
-        let {Id: id, Created: created, Config: {Image: image}, State: State} = await constainer.inspect()
+        let {Id: id, Created: created, Config: {Image: image}, State: State, Name: real_name} = await constainer.inspect()
         let {Status: status} = State
         let state = State
         let {rows} = await ctx.pg.query('select name, remark from containers where id = $1', [id])
         let {name = '', remark = ''} = rows[0] || {}
-        ctx.body = {id, image, created, name, remark, status, state}
+        ctx.body = {id, image, created, name, remark, status, state, real_name}
     } catch (e) {
         ctx.throw(e)
     }
@@ -60,7 +60,13 @@ router.post('/', async (ctx, next) => {
         Labels: {
             'vlab': '',
         },
+        HostConfig: {
+            NetworkMode: 'online_linux_env_gateway',
+        },
     })
+    // const network = await ctx.docker.getNetwork('online_linux_env_gateway')
+    // console.log('id', info.id, network.connect)
+    // await network.connect({Container: info.id})
     const client = await ctx.pg.connect()
     await client.query('begin')
     try {

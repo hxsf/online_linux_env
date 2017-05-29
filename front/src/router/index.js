@@ -20,21 +20,18 @@ export default new Router({
             meta: {
                 requiresAuth: true,
             },
-        },
-        {
+        }, {
             name: 'IDE',
-            path: '/ide',
+            path: '/ide/:id?/:token?',
             component: IDE,
             meta: {
                 requiresAuth: true,
             },
-        },
-        {
+        }, {
             name: 'Auth',
             path: '/auth',
             component: Auth,
-        },
-        {
+        }, {
             name: 'Admin',
             path: '/admin',
             component: Admin,

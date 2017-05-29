@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/local/bin/node ./index.js >> /var/log/socket.log 2>&1

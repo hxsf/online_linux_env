@@ -4,6 +4,7 @@ export default {
     state: {
         vlab_fs_url: 'ws://127.0.0.1:10000/fs',
         vlab_pty_url: 'ws://127.0.0.1:10000/pty',
+        ws_port: '8000',
         token: localStorage.getItem(TOKEN_NAME) || '',
     },
     mutations: {

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="node_modules/xterm/dist/xterm.css">
+</head>
+<body>
+    <div id="terminal"></div>
+    <script src="node_modules/socket.io-client/dist/socket.io.min.js" charset="utf-8"></script>
+    <script src="node_modules/xterm/dist/xterm.js" charset="utf-8"></script>
+    <script src="attach.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var socket = io.connect('ws://localhost:10000')
+        socket.on('connect', function () {
+            var term = new Terminal();
+            term.open(document.getElementById('terminal'));
+            term.attach(socket)
+        })
+
+    </script>
+</body>
+</html>

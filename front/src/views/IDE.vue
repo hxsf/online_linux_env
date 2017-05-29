@@ -11,7 +11,8 @@
         <div class="main">
             <div class="middle">
                 <div class="leftbar">
-                    <FileTree></FileTree>
+                    <FileTree class="file-tree" :gateway="container_name"></FileTree>
+                    <ProxyList class="proxy-list"></ProxyList>
                 </div>
                 <div class="editors">
                     <Tabs value="name1" type="card" :animated="false" class="fix-height" closable @on-click="editorTabClick" @on-tab-remove="handleCloseEditor" ref="editorTab">
@@ -25,7 +26,7 @@
                 <Tabs value="name1" type="card" :animated="false" class="fix-height" closable @on-click="terminalTabClick" @on-tab-remove="handleCloseTermial" ref="terminalTab">
                     <Button type="ghost" @click.stop="terminalAdd" size="small" slot="extra" :disabled="terminals.length > 4">增加</Button>
                     <Tab-pane class="tab-item" :label="terminal.name" :name="terminal.name" v-for="(terminal, i) in terminals" :key="terminal.name">
-                        <Terminal ref="terminals" :name="terminal.name"></Terminal>
+                        <Terminal ref="terminals" :gateway="container_name" :name="terminal.name"></Terminal>
                     </Tab-pane>
                 </Tabs>
             </div>
@@ -38,12 +39,14 @@
     import Editor from '@/components/Editor';
     import Terminal from '@/components/Terminal';
     import FileTree from '@/components/FileTree';
+    import ProxyList from '@/components/ProxyList';
 
     export default {
         components: {
             Editor,
             Terminal,
             FileTree,
+            ProxyList,
         },
         data() {
             return {
@@ -58,6 +61,9 @@
             },
             curEditor() {
                 return this.$store.state.editors.curEditor;
+            },
+            container_name() {
+                return this.$route.params.token || 'default';
             },
         },
         watch: {
@@ -161,6 +167,16 @@
     }
     .main .middle .leftbar {
         width: 250px;
+        display: flex;
+        flex-direction: column;
+    }
+    .main .middle .leftbar .file-tree {
+        display: flex;
+        flex-grow: 1;
+    }
+    .main .middle .leftbar .proxy-list {
+        display: flex;
+        flex-basis: 200px;
     }
     .main .middle .editors {
         width: calc(100% - 250px);

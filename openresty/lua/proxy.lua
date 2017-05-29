@@ -1,25 +1,31 @@
 local redis = require "resty.redis"
 local config = require "lua.config"
+
 local r = redis:new()
-r:set_timeout(1000)
+r:set_timeout(2000)
 
 local ok, err = r:connect(config.redis_host, config.redis_port)
 if not ok then
     ngx.status = 500
-    ngx.say("redis not found", err)
+    ngx.say("redis cannot connect: ", err)
     return
 end
 
-proxy, err = r:get(ngx.var.host)
+local m = ngx.re.match(ngx.var.host, [[^([^.]+)\.]], "jo")
+local host = m[1]
+
+ngx.var.target = host .. ':10000'
+
+proxy, err = r:get('gateway:' .. host)
+if err then
+    return
+end
+
 if not proxy then
-    ngx.status = 500
-    ngx.say("failed to get", err)
     return
 end
 
 if proxy == ngx.null then
-    ngx.status = 404
-    ngx.say(ngx.var.host .. "not found")
     return
 end
 r:set_keepalive(10000, 100)

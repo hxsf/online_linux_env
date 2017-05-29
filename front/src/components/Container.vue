@@ -102,6 +102,9 @@
             isRuning() {
                 return this.data.state.Running;
             },
+            gateway_token() {
+                return this.data.real_name.slice(1);
+            },
         },
         methods: {
             open() {
@@ -175,7 +178,7 @@
                 });
             },
             OpenIDE() {
-                this.$router.push({ name: 'IDE', params: { id: this.data.id } });
+                this.$router.push({ name: 'IDE', params: { id: this.data.id, token: this.gateway_token } });
             },
         },
     };

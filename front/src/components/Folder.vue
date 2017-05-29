@@ -2,8 +2,8 @@
     <li class="tree-item item-folder" :class="{active: selected}" @click.prevent.stop="clickHandle" @contextmenu.prevent.stop="contextmenu">
         <span class="title"><Icon :type="icon"></Icon> {{pathinfo.name}}</span>
         <ul class="folder" :class="{expand}">
-            <Folder v-for="folder in folders" @menu="menu" :pathinfo="folder" :key="folder.fullpath"></Folder>
-            <File v-for="file in files" @menu="menu" :pathinfo="file" :key="file.fullpath"></File>
+            <Folder v-for="folder in folders" :socket="socket" @menu="menu" :pathinfo="folder" :key="folder.fullpath"></Folder>
+            <File v-for="file in files" :socket="socket" @menu="menu" :pathinfo="file" :key="file.fullpath"></File>
         </ul>
     </li>
 </template>
@@ -24,11 +24,8 @@
                 selected: false,
             };
         },
-        props: ['pathinfo'],
+        props: ['pathinfo', 'socket'],
         computed: {
-            socket() {
-                return this.$store.getters.socket;
-            },
             icon() {
                 if (this.loading) {
                     return 'load-a';

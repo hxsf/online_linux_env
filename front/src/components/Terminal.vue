@@ -6,6 +6,11 @@
     import Xterm from './xterm';
 
     export default {
+        props: {
+            gateway: {
+                default: 'default',
+            },
+        },
         data() {
             return {
                 socket: null,
@@ -13,7 +18,7 @@
             };
         },
         mounted() {
-            this.socket = io.connect(this.$store.state.common.vlab_pty_url);
+            this.socket = io.connect(`ws://${this.gateway}.v.just-test.com:${this.$store.state.common.ws_port || '10000'}/pty`);
             this.socket.on('connect', () => {
                 this.xterm = new Xterm({
                     cursorBlink: false, // Do not blink the terminal's cursor

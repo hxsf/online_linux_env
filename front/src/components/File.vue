@@ -10,12 +10,7 @@
                 selected: false,
             };
         },
-        props: ['pathinfo'],
-        computed: {
-            socket() {
-                return this.$store.state.common.socket;
-            },
-        },
+        props: ['pathinfo', 'socket'],
         methods: {
             clickHandle() {
                 this.getFileTree().select(this);

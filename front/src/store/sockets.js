@@ -8,6 +8,7 @@ export default {
     },
     getters: {
         socket(state, getters, roteState) {
+            console.error('!!!!!!');
             if (!state._socket) {
                 state._socket = io.connect(roteState.common.vlab_fs_url);
             }
