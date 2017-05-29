@@ -11,13 +11,13 @@
         <div class="main">
             <div class="middle">
                 <div class="leftbar">
-                    <FileTree class="file-tree" :gateway="container_name"></FileTree>
+                    <FileTree class="file-tree" :socket="socket"></FileTree>
                     <ProxyList class="proxy-list"></ProxyList>
                 </div>
                 <div class="editors">
                     <Tabs value="name1" type="card" :animated="false" class="fix-height" closable @on-click="editorTabClick" @on-tab-remove="handleCloseEditor" ref="editorTab">
                         <Tab-pane class="tab-item" :label="editor.name" :name="editor.fullpath" v-for="(editor, i) in editors" :key="editor.fullpath">
-                            <Editor :path="editor.fullpath" ref="editors"></Editor>
+                            <Editor :socket="socket" :path="editor.fullpath" ref="editors"></Editor>
                         </Tab-pane>
                     </Tabs>
                 </div>
@@ -40,6 +40,7 @@
     import Terminal from '@/components/Terminal';
     import FileTree from '@/components/FileTree';
     import ProxyList from '@/components/ProxyList';
+    import IO from 'socket.io-client';
 
     export default {
         components: {
@@ -53,6 +54,7 @@
                 activeEditor: 1,
                 terminalNumber: 0,
                 terminals: [],
+                socket: null,
             };
         },
         computed: {
@@ -68,9 +70,16 @@
         },
         watch: {
             curEditor(now) {
-                this.$nextTick(() => {
-                    this.$refs.editorTab.handleChange(now);
-                });
+                if (now > 0) {
+                    this.$nextTick(() => {
+                        this.$refs.editorTab.handleChange(now);
+                    });
+                }
+            },
+            $route(to, from) {
+                if (to.params.id !== from.params.id) {
+                    this.update_socket();
+                }
             },
         },
         methods: {
@@ -111,6 +120,23 @@
                     this.terminals.splice(index, 1);
                 }
             },
+            update_socket() {
+                this.close_socket();
+                this.socket = IO(`ws://${this.container_name}.v.just-test.com:${this.$store.state.common.ws_port || '10000'}/fs`);
+            },
+            close_socket() {
+                if (this.socket) {
+                    this.socket.close();
+                    this.socket = null;
+                }
+                this.terminals = [];
+                this.activeEditor = 1;
+                this.terminalNumber = 0;
+                this.$store.commit('reseteditor');
+            },
+        },
+        beforeMount() {
+            this.update_socket();
         },
     };
 </script>

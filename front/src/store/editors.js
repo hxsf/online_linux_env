@@ -14,6 +14,10 @@ export default {
                 state.curEditor = index;
             }
         },
+        reseteditor(state) {
+            state.editors = [];
+            state.curEditor = -1;
+        },
         removeEditor(state, fullpath) {
             const index = state.editors.findIndex(item => item.fullpath === fullpath);
             if (index > -1) {

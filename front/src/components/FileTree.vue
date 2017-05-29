@@ -1,7 +1,7 @@
 <template>
     <div class="tree">
         <ul class="treelist" @contextmenu.prevent.stop="contextmenu">
-            <Folder class="root"  :socket="socket" @menu="menu" :pathinfo="folder" ref='root'></Folder>
+            <Folder class="root" :socket="socket" @menu="menu" :pathinfo="folder" ref='root'></Folder>
         </ul>
         <div class="menu menu-bg" v-show="menu_expand" @click.self.stop="cancel_menu" @dblclick.self.stop="cancel_menu" @contextmenu.prevent.stop="cancel_menu">
             <ul class="menu-list" v-bind:style="menu_postion">
@@ -22,16 +22,11 @@
     </div>
 </template>
 <script>
-    import IO from 'socket.io-client';
     import Folder from './Folder';
     import File from './File';
 
     export default {
-        props: {
-            gateway: {
-                default: 'default',
-            },
-        },
+        props: ['socket'],
         components: {
             File,
             Folder,
@@ -52,7 +47,6 @@
                     basedir: '/',
                     fullpath: '/workspace',
                 },
-                socket: null,
             };
         },
         computed: {
@@ -61,12 +55,6 @@
             },
         },
         methods: {
-            update_socket() {
-                if (this.socket) {
-                    this.socket.close();
-                }
-                this.socket = IO(`ws://${this.gateway}.v.just-test.com:${this.$store.state.common.ws_port || '10000'}/fs`);
-            },
             menu(component, { clientX, clientY }) {
                 this.menu_postion.left = `${clientX}px`;
                 this.menu_postion.top = `${clientY}px`;
@@ -159,9 +147,6 @@
             },
         },
         name: 'FileTree',
-        created() {
-            this.update_socket();
-        },
     };
 </script>
 <style scoped>

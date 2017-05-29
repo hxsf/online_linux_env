@@ -53,7 +53,7 @@ router.post('/', async (ctx, next) => {
     if (!(image && image.startsWith(process.env.IMAGE_PREFIX))) {
         return ctx.throw('所选模版不可用', 400)
     }
-    let info = await ctx.docker.createContainer({
+    let res = await ctx.docker.createContainer({
         Image: image,
         AttachStdout: false,
         AttachStderr: false,
@@ -64,18 +64,19 @@ router.post('/', async (ctx, next) => {
             NetworkMode: 'online_linux_env_gateway',
         },
     })
-    // const network = await ctx.docker.getNetwork('online_linux_env_gateway')
-    // console.log('id', info.id, network.connect)
-    // await network.connect({Container: info.id})
+    let info = await res.inspect()
+    const container_name = info.Name.slice(1)
+    // If use auto-gen name, docker's network dns cannot resolv it.
+    await res.rename({ name: '2' + container_name })
     const client = await ctx.pg.connect()
     await client.query('begin')
     try {
-        await client.query('insert into containers (id, name, remark) values ($1, $2, $3);',[info.id, name, remark])
-        await client.query('insert into containers_users (cid,  uid) values ($1, $2);', [info.id, ctx.uid])
+        await client.query('insert into containers (id, name, remark) values ($1, $2, $3);',[info.Id, name, remark])
+        await client.query('insert into containers_users (cid,  uid) values ($1, $2);', [info.Id, ctx.uid])
         await client.query('commit')
-        await ctx.redis.sadd('containers::all', info.id)
+        await ctx.redis.sadd('containers::all', info.Id)
         await ctx.redis.expire('containers::all', 7200)
-        ctx.body = {id: info.id}
+        ctx.body = {id: info.Id}
         ctx.status = 201
     } catch (err) {
         await client.query('rollback')

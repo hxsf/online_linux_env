@@ -8,7 +8,7 @@
     import { getModeFromExt } from './helper';
 
     export default {
-        props: ['path'],
+        props: ['path', 'socket'],
         data() {
             return {
                 editor: null,
@@ -17,9 +17,6 @@
         computed: {
             extname() {
                 return path.extname(this.path);
-            },
-            socket() {
-                return this.$store.getters.socket;
             },
         },
         methods: {
